@@ -63,16 +63,17 @@ class Menu
              2 - Create Account
              ", message );
            string stringSelection = Console.ReadLine();
-           int intSelection;
+           int intSelection ;
            if( int.TryParse(stringSelection, out intSelection) == false){
                 //throw new MenuSelectionError(string.Format("Your entry {0} is not a valid number. Please enter valid number", stringSelection));
                MenuOneSelection(string.Format("Your entry {0} is not a valid number. Please enter valid number", stringSelection));
             } else if (intSelection < 0 || intSelection > 2) {
                MenuOneSelection(string.Format("Your entry {0} is not a valid option number. Please enter valid option 0, 1, or 2", intSelection));
             } 
-            //Console.WriteLine("here One {0}", stringSelection);
-            //Console.WriteLine("here Two  {0}", intSelection);
-            return intSelection;
+            Console.WriteLine("here One {0}", stringSelection);
+            Console.WriteLine("here Two  {0}", intSelection);
+            
+            return  intSelection;
             
     }
 
