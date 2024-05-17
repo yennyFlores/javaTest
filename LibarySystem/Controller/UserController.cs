@@ -1,15 +1,16 @@
 using LibarySystem.Model;
-
+using LibarySystem.DataAccess;
 namespace LibarySystem.Controller;
+
 
 public class UserController
 {
     public static void CreateUser(string userName)
     {
-        User newUser = new User(userName);
+        User newUser = new User(userName);  
 
-        //Console.WriteLine($"User {newUser.userName} created using CreateUser()!");
-        //Console.WriteLine($"{newUser.userId}");
+        Console.WriteLine($"User Profile {newUser.userName} created sucessfully!");
+        UserStorage.StoreUser(newUser);
     }
 
     

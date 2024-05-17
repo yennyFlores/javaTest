@@ -3,8 +3,8 @@ namespace LibarySystem.Model;
 public class User
 {
    
-    public Guid userId {get; private set;}
-    public string userName {get; private set;}
+    public Guid userId {get; set;}
+    public string userName {get; set;}
 
     public User() {}
 

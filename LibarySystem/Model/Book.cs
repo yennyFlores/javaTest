@@ -1,6 +1,7 @@
 namespace LibarySystem.Model;
 
 public class Book {
+    /*
      string name {get; set;}
      string author {get; set;}
      string genre {get; set;}
@@ -14,4 +15,5 @@ public class Book {
         genre = _genre;
         barcode = _barcode;
     }
+    */
 }
