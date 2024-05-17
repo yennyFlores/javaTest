@@ -15,15 +15,15 @@ class Menu
         
         switch ( MenuOneSelection("Welcome to the Library!"))
         {
-            case 0:
+            case 0: //Exit
                 break;
-            case 1:
-                //string userName = MenuUserLogin(); 
-                //ScreenTwo();
+            case 1: //Login
+                string userName1 = MenuUserLogin("Please enter your login username:"); 
+                ScreenTwo(userName1);
                 break;
-            case 2:
-                string userName = MenuUserCreation();
-                ScreenTwo(userName);
+            case 2: //Create Account
+                string userName2 = MenuUserCreation("Please enter a new username:");
+                ScreenTwo(userName2);
                 break;
                 
         };
@@ -34,23 +34,19 @@ class Menu
         
         switch ( MenuTwoSelection(string.Format("Welcome Back {0} to the library.", userName)))
         {
-            case 0:
+            case 0: //Logout & Exit
+               //LogoutUser();
+               //ScreenOne();
                 break;
-            case 1:
+            case 1: //View Currently Checked out Books
                 break;
-            case 2:
+            case 2: //Search by Name,Author,Barcode,Genre
                 break;
-            case 3:
+            case 3: //View Selected Cart for Checkout
                 break;
-            case 4:
+            case 4: //Checkin Books
                 break;
-            case 5:
-                break;
-            case 6:
-                break;
-                           
-                   
-                
+                        
         };
 
     }
@@ -66,16 +62,17 @@ class Menu
              1 - Login
              2 - Create Account
              ", message );
-            string stringSelection = Console.ReadLine();
-            int intSelection;
-
+           string stringSelection = Console.ReadLine();
+           int intSelection;
            if( int.TryParse(stringSelection, out intSelection) == false){
                 //throw new MenuSelectionError(string.Format("Your entry {0} is not a valid number. Please enter valid number", stringSelection));
                MenuOneSelection(string.Format("Your entry {0} is not a valid number. Please enter valid number", stringSelection));
             } else if (intSelection < 0 || intSelection > 2) {
                MenuOneSelection(string.Format("Your entry {0} is not a valid option number. Please enter valid option 0, 1, or 2", intSelection));
             } 
-            return Convert.ToInt16(stringSelection);
+            //Console.WriteLine("here One {0}", stringSelection);
+            //Console.WriteLine("here Two  {0}", intSelection);
+            return intSelection;
             
     }
 
@@ -86,70 +83,59 @@ class Menu
             Menu Option   
             0 - Logout & Exit
             1 - View Currently Checked out Books
-            2 - Search by Genre
-            3 - Search Top Books
-            4 - Search by Name or Author or Barcode 
-            5 - View Selected Cart for Checkout
-            6 - Checkin Books
+            2 - Search by Name, Author, Barcode, Genre
+            3 - View Selected Cart for Checkout
+            4 - Checkin Books
              ", message );
             string stringSelection = Console.ReadLine();
             int intSelection;
+
             if( int.TryParse(stringSelection, out intSelection) == false){
                MenuTwoSelection(string.Format("Your entry {0} is not a valid number. Please enter valid number", stringSelection));
+            } else if (intSelection < 0 || intSelection > 5) {
+               MenuTwoSelection(string.Format("Your entry {0} is not a valid option number. Please enter valid options 0 to 5", stringSelection));
             } 
-            if (intSelection < 0 || intSelection > 6) {
-               MenuTwoSelection(string.Format("Your entry {0} is not a valid option number. Please enter valid options 0 to 6", stringSelection));
-            } 
-            return  Convert.ToInt16(stringSelection);;
+
+            return intSelection;
             
     }
 
-     public static string MenuUserCreation() {
-            Console.WriteLine("Please enter a username: ");
+     public static string MenuUserCreation(string message) {
+
+            Console.WriteLine("{0}", message);
             string userInput = Console.ReadLine() ?? "";
             userInput = userInput.Trim();
 
             if(String.IsNullOrEmpty(userInput))
             {
-                Console.WriteLine("Username {0} cannot be blank, please try again.", userInput);
-                MenuUserCreation();
-            }/*else if(UserController.UserExists(userInput))
+                MenuUserCreation("Username cannot be blank. Please enter another username: ");
+            }else if(UserController.UserExists(userInput))
             {
-               Console.WriteLine("Username {0} already exists, please choose another.", userInput);
-                MenuUserCreation();
-             }*/ else { 
+                MenuUserCreation(string.Format("Username {0} already exists. Please try another username:", userInput));
+            } else { 
                 UserController.CreateUser(userInput);
+            }
+
+            return userInput;
+     }
+
+      public static string MenuUserLogin(string message) {
+            Console.WriteLine("{0}", message );
+            string userInput = Console.ReadLine() ?? "";
+            userInput = userInput.Trim();
+
+            if(String.IsNullOrEmpty(userInput))
+            {
+                MenuUserLogin("Username cannot be blank. Please enter another username: ");
+            }else if(!UserController.UserExists(userInput))
+            {
+                MenuUserLogin(string.Format("Username {0} does not exist. Please try another username:", userInput));
+             } else { 
+                //Console.WriteLine("here hi:{0}", userInput );
+                UserController.ReturnUser(userInput);
             }
             return userInput;
      }
 
-      //public static void MenuUserLogin() {
-
-     //     MenuSelectionTwo("Congrats {0}, Welcome Back", userInput);
-     //}
-
 }
 
-//UI
-//Models
-//Controllers
-//Data Access Control
-//Validations
-//Exceptions
-
-
-                          //Welcome screen
-             //Menu Option  
-             //0 - Exit
-             //1 - Login
-             //2 - Create Account
-
-             //User Screen
-           // Menu Option  
-           //  0 - Logout & Exit
-           //  1 - View Currently Checked out Books
-           //  2 - Search by Genre
-           //  3 - Search Top Books
-           //  4 - Search by Name or Author or Barcode 
-           //  5 - View Selected Cart for Checkout
-           //  6 - Checkin Books" );

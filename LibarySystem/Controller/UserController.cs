@@ -16,8 +16,20 @@ public class UserController
     
     public static bool UserExists(string userName)
     {
+        if(UserStorage.FindUser(userName) != null)
+        {
+            return true;
+        }
         return false;
     }
+
+  
+    public static User ReturnUser (string userName)
+    {
+        User existingUser = UserStorage.FindUser(userName);
+        return existingUser;
+    }
+    
 
     
 
