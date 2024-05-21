@@ -42,7 +42,7 @@ class Menu
             case 1: 
                 MenuBookCreation();
                 break;
-            case 2: //Search by Name,Author,Barcode,Genre
+            case 2: //Search by Book, Author, Genre
                 break;
             case 3: //View Selected Cart for Checkout
                 break;
