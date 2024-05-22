@@ -11,6 +11,8 @@ public class UserStorage
     //The underscore is a common convention to denote variables that are common
     //to the entire class
     public static string filePath = "UsersFile.json";
+    
+
 
     public static void StoreUser(User user)
     {   
@@ -70,6 +72,7 @@ public class UserStorage
 
     }
 
+
     public static User FindUser(string usernameToFind)
     {
         //User object to store a user if they are found or NULL if they are not
@@ -116,7 +119,7 @@ public class UserStorage
         {
             Console.WriteLine(e.Message);
         }
-        
+      
         return foundUser;
 
     }
