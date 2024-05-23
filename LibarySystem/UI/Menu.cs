@@ -38,20 +38,17 @@ class Menu
             case 0: //Logout & Exit
                ScreenOne();
                 break;
-            case 1: 
+            case 1:  //Search by Title
                 BookSearchSelection();
                 break;
-            case 2: //View Currently Checkout Books
-                //CheckedOutBooks();
+            case 2: //View Selected Cart for Checkout 
+                CurrentCheckedOutCart(); 
                 break;
-            case 3: // Search by Book or Author [add to cart option for each login session] 
-  
+            case 3: //View Currently Checked out Books
+                CheckedOutBooks();
                 break;
-            case 4: //view checkout cart
-                //CurrentCheckedOutCart();
-                break;
-            case 5: //Checkin Books
-                //CheckinBooks();
+            case 4: //Checkin Books
+                CheckInBooks();
                 break;
                         
         };
@@ -222,22 +219,68 @@ class Menu
            
             foreach(Book book in bookResultList ){
                 if(intSelection == book.index ) {
-                    //Add to cart method, as a list? 
-                     Console.WriteLine(@"Added to CART" + book.index + " Title: " + book.title + " Author: " + book.author + "" );
+                    BookController.SetCart(book, UserController.GetCurrentUserName());
+                    Console.WriteLine(@"Added to CART" + book.index + " Title: " + book.title + " Author: " + book.author + "" );
+
                 }
                
             }
+            ScreenTwo();
             
-
-            
-
-
-            
-
         } else {
             Console.WriteLine(@"Results: Sorry. No books match critera. Returning to Main Menu ");
-            MenuTwoSelection();
+            ScreenTwo();
         }
+     }
+
+
+     public static void CurrentCheckedOutCart () {
+             List<Book> userCart  = BookController.GetCart();
+             if(userCart.Count == 0){
+                Console.WriteLine("No books selected in Cart");
+                ScreenTwo();
+             }else {
+                foreach(Book bookincart in userCart){
+                    Console.WriteLine(@"Cart: " + bookincart.title + " " + bookincart.author);
+                }
+                Console.WriteLine(@"
+                Menu Option   
+                0 - Return to Main Menu
+                1 - Checkout 
+                2 - Clear cart
+                ");
+
+                string stringSelection = Console.ReadLine() ?? "";
+                int intSelection = Convert.ToInt16(stringSelection);
+
+                 switch ( intSelection)
+                {
+                    case 0: 
+                        ScreenTwo();
+                        break;
+                    case 1:  
+                        BookController.Checkout();
+                        ScreenTwo();
+                        break;
+                    case 2: 
+                        BookController.ClearCart(); 
+                        ScreenTwo();
+                        break;             
+                };
+
+             }
+     }
+
+     public static void CheckedOutBooks(){
+        string userCheckedout = BookController.QueryCheckedOutBooks();
+        Console.WriteLine(userCheckedout);
+        ScreenTwo();
+     }
+
+    public static void CheckInBooks(){
+        //string userCheckedIn = BookController.QueryCheckedInBooks();
+        //Console.WriteLine(userCheckedIn);
+        //ScreenTwo();
      }
 
 }

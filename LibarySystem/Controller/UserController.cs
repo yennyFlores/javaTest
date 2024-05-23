@@ -49,6 +49,11 @@ public class UserController
         return currentLoggedUser.userName;
     }
 
+     public static Guid GetCurrentGuid()
+    {
+        return currentLoggedUser.userId;
+    }
+
     
 
     
