@@ -88,40 +88,51 @@ class Menu
 
      public static void MenuUserCreation() {
 
-            Console.WriteLine("Please enter a new Username:");
-            string userInput = Console.ReadLine() ?? "";
-            userInput = userInput.Trim();
+        string stringSelection = "";
+        bool repeat = true;
+        do{
+                Console.WriteLine("Please enter a new Username:");
+                string userInput = Console.ReadLine() ?? "";
+                userInput = userInput.Trim();
 
-            if(String.IsNullOrEmpty(userInput))
-            {
-                Console.WriteLine("Username cannot be blank. Please enter another username: ");
-                MenuUserCreation();
-            }else if(UserController.UserExists(userInput))
-            {
-                Console.WriteLine("Username {0} already exists. Please try another username:", userInput);
-                MenuUserCreation();
-            } else { 
-                UserController.CreateUser(userInput);
-            }
+                if(String.IsNullOrEmpty(userInput))
+                {
+                    Console.WriteLine("Username cannot be blank. Please enter another username: ");
+                    
+                }else if(UserController.UserExists(userInput))
+                {
+                    Console.WriteLine("Username {0} already exists. Please try another username:", userInput);
+                   
+                } else { 
+                    UserController.CreateUser(userInput);
+                    repeat = false;
+                }
+        }while (repeat);
      }
 
       public static void MenuUserLogin() {
-            Console.WriteLine("Please enter your login username:" );
-            string userInput = Console.ReadLine() ?? "";
-            userInput = userInput.Trim();
-
-            if(String.IsNullOrEmpty(userInput))
-            {
-                Console.WriteLine("Username cannot be blank. Please enter another username: ");
-                MenuUserLogin();
-            }else if(!UserController.UserExists(userInput))
-            {
-                Console.WriteLine("Username {0} does not exist. Please try another username:", userInput);
-                MenuUserLogin();
-             } else { 
-                UserController.ReturnUser(userInput);
-            }
             
+        string stringSelection = "";
+        bool repeat = true;
+        do{
+                Console.WriteLine("Please enter your login username:" );
+                string userInput = Console.ReadLine() ?? "";
+                userInput = userInput.Trim();
+                if(String.IsNullOrEmpty(userInput))
+                {
+                    Console.WriteLine("Username cannot be blank. Please enter another username: ");
+                   
+                }else if(!UserController.UserExists(userInput))
+                {
+                    Console.WriteLine("Username {0} does not exist. Please try another username:", userInput);
+                    
+                } else { 
+                    UserController.ReturnUser(userInput);
+                    repeat = false;
+                }
+
+            } 
+        while (repeat);      
      }
 
      public static void BookSearchSelection(){
