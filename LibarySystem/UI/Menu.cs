@@ -1,6 +1,5 @@
 ﻿using LibarySystem.Model;
 using LibarySystem.Controller;
-using LibarySystem.Exceptions_Validations;
 
 namespace LibarySystem;
 
@@ -44,13 +43,9 @@ class Menu
             case 2: //View Selected Cart for Checkout 
                 CurrentCheckedOutCart(); 
                 break;
-            case 3: //View Currently Checked out Books
+            case 3: //View Currently Checked out Books for Checkin
                 CheckedOutBooks();
-                break;
-            case 4: //Checkin Books
-                CheckInBooks();
-                break;
-                        
+                break;            
         };
 
     }
@@ -85,8 +80,7 @@ class Menu
             0 - Logout
             1 - Search by Title
             2 - View Selected Cart for Checkout 
-            3 - View Currently Checked out Books
-            4 - Checkin Books
+            3 - View Currently Checked out Books for Checkin
              " , UserController.GetCurrentUserName());
             string stringSelection = Console.ReadLine() ?? "";
             int intSelection;
@@ -194,15 +188,17 @@ class Menu
                 whereClause += "or title like '%" + inputsCleaned[i] + "%' ";
                 }
         }
-        Console.WriteLine(whereClause);
+        //Console.WriteLine(whereClause);
         
         List<Book> bookResultList= BookController.BookSearch(whereClause);
      
         if(bookResultList.Count > 0){
-             Console.WriteLine(@"Results: Please select a book to add to cart ");
+             Console.WriteLine(@"
+             Select book Option to add to CART ");
             foreach(Book book in bookResultList ){
                
-                Console.WriteLine(@"" + book.index + " Title: " + book.title + " Author: " + book.author );
+                Console.WriteLine(@"
+                Option " + book.index + ": " + book.title + " " + book.author );
             }
             
             string stringSelection = Console.ReadLine() ?? "";
@@ -220,7 +216,8 @@ class Menu
             foreach(Book book in bookResultList ){
                 if(intSelection == book.index ) {
                     BookController.SetCart(book, UserController.GetCurrentUserName());
-                    Console.WriteLine(@"Added to CART" + book.index + " Title: " + book.title + " Author: " + book.author + "" );
+                    Console.WriteLine(@"
+                             Added to CART " + book.index + " " + book.title + " " + book.author + "" );
 
                 }
                
@@ -274,14 +271,25 @@ class Menu
      public static void CheckedOutBooks(){
         string userCheckedout = BookController.QueryCheckedOutBooks();
         Console.WriteLine(userCheckedout);
+      
+        Console.WriteLine("Please select option to check in a book:");
+        string stringSelection = Console.ReadLine() ?? "";
+        int intSelection =  Convert.ToInt16(stringSelection);;
+        /*
+            if( int.TryParse(stringSelection, out intSelection) == false){
+               Console.WriteLine("Your entry {0} is not a valid number. Please enter valid number", stringSelection);
+               MenuTwoSelection();
+            } else if (intSelection < 0 || intSelection > 4) {
+               Console.WriteLine("Your entry {0} is not a valid option number. Please enter valid options 0 to 4", stringSelection);
+               MenuTwoSelection();
+            } 
+        */
+        
+        BookController.CheckIn(intSelection);
+
         ScreenTwo();
      }
-
-    public static void CheckInBooks(){
-        //string userCheckedIn = BookController.QueryCheckedInBooks();
-        //Console.WriteLine(userCheckedIn);
-        //ScreenTwo();
-     }
-
+    
+     
 }
 

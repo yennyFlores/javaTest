@@ -9,6 +9,7 @@ public class BookController
 {
   public static List<Book> cart = new List<Book>();
   public static string lastuser = "";
+  public static Dictionary<int, int> checkinOptions = new Dictionary<int, int>();
    
   public static List<Book> BookSearch(string userSearch ){
           Console.WriteLine($"Searching ...");
@@ -67,7 +68,7 @@ public class BookController
           foreach (Book book in cart){
                
                if(NOTsafeToCheckout.Count == 0){
-                    Console.WriteLine("All books are available for checkout.");
+                   
                     string cmdInsert = @"INSERT INTO checkoutStatus (barcode, userguid, checkedout_status, duedate, control_ts) VALUES (@barcode, @userguid, @checkedout_status, @duedate, DEFAULT) " ;
                     using SqlCommand cmd2 = new SqlCommand(cmdInsert, connection);
                     cmd2.Parameters.AddWithValue("@barcode", book.barcode);
@@ -109,34 +110,63 @@ public class BookController
       public static string QueryCheckedOutBooks(){
            Guid userGuid = UserController.GetCurrentGuid();
           string cmdText =
-               string.Format(@"SELECT  b.title, b.author, c.checkedout_status, c.duedate  FROM checkoutStatus c join books b on b.barcode = c.barcode where checkedout_status = 'OUT' and userguid = '{0}' ", userGuid);
+               string.Format(@"SELECT rank() over(order by title desc) as _index, b.barcode,  b.title, b.author, c.checkedout_status, c.duedate  FROM checkoutStatus c join books b on b.barcode = c.barcode where checkedout_status = 'OUT' and userguid = '{0}' ", userGuid);
           string returnUserChecked = "";
-          
+          Dictionary<int, int> checkinOptions2 = new Dictionary<int, int>();
           using SqlConnection connection = new SqlConnection(ADOconnect.ConnectionString());
           connection.Open();
           using SqlCommand cmd4 = new SqlCommand(cmdText, connection);
           using SqlDataReader reader4 = cmd4.ExecuteReader();
           while(reader4.Read()){
-               returnUserChecked += "Checked Out: " + reader4.GetString(0) + " "+ reader4.GetString(1) + " " + reader4.GetString(2) + " "+ "Due Date: " + reader4.GetString(3);
+               returnUserChecked += @" 
+                    Check-In Option " + Convert.ToInt32(reader4[0].ToString()) + ": " + reader4.GetString(2) + " "+ reader4.GetString(3) + " Checked Status-" + reader4.GetString(4) + " "+ "Due Date- " + reader4.GetString(5) + "";
+               checkinOptions2.Add(Convert.ToInt32(reader4[0].ToString()), Convert.ToInt32(reader4[1].ToString()));
           }
+          SetCheckinOp(checkinOptions2);
           return returnUserChecked;
      }
 
-/*
-     public static string QueryCheckedInBooks(){
-           Guid userGuid = UserController.GetCurrentGuid();
-          string cmdText =
-               string.Format(@"SELECT  b.title, b.author, c.checkedout_status, c.duedate  FROM checkoutStatus c join books b on b.barcode = c.barcode where checkedout_status = 'OUT' and userguid = '{0}' ", userGuid);
-          string returnUserChecked = "";
-          
+     public static void SetCheckinOp(Dictionary<int, int> options){
+          checkinOptions = options ;
+     }
+
+     public static Dictionary<int, int> GetCheckinOp(){
+         return checkinOptions;
+     }
+
+
+
+     //go back and make sure the latest OUT status is in code
+
+     //validations
+     //iterations 
+     //change the Library System Name   
+     //move ADO , connection, exceptions
+
+     public static void CheckIn(int choosenOption){
+          Dictionary<int, int> checkinOps = GetCheckinOp();
+          Guid userGuid = UserController.GetCurrentGuid();
+          int checkoutBarcode = 0;
+          foreach (KeyValuePair<int,int> op in checkinOps)
+          {   
+            if(choosenOption == Convert.ToInt32(op.Key)){   
+               Console.WriteLine(op.Key + " owns " + op.Value);
+               checkoutBarcode = Convert.ToInt32(op.Value);
+            }
+          }
           using SqlConnection connection = new SqlConnection(ADOconnect.ConnectionString());
           connection.Open();
-          using SqlCommand cmd4 = new SqlCommand(cmdText, connection);
-          using SqlDataReader reader4 = cmd4.ExecuteReader();
-          while(reader4.Read()){
-               returnUserChecked += "Checked Out: " + reader4.GetString(0) + " "+ reader4.GetString(1) + " " + reader4.GetString(2) + " "+ "Due Date: " + reader4.GetString(3);
-          }
-          return returnUserChecked;
+          string cmdInsert = @"INSERT INTO checkoutStatus (barcode, userguid, checkedout_status, duedate, control_ts) VALUES (@barcode, @userguid, @checkedout_status, null, DEFAULT) " ;
+                              using SqlCommand cmd3 = new SqlCommand(cmdInsert, connection);
+                              cmd3.Parameters.AddWithValue("@barcode", checkoutBarcode);
+                              cmd3.Parameters.AddWithValue("@userguid",userGuid );
+                              cmd3.Parameters.AddWithValue("@checkedout_status", "IN");
+                    
+                              cmd3.ExecuteNonQuery();
+                              
+                              Console.WriteLine("Checkin Completed");
+          
      }
-     */
+     
+    
 }
