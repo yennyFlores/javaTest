@@ -34,6 +34,7 @@ public class UserStorage
         else if (!File.Exists(filePath)) //The first time the program runs, the file probably doesn't exist
         {
             //Creating a blank list to use later
+            
             List<User> initialUsersList = new List<User>();
 
             //Adding our user to our list, PRIOR to serializing it

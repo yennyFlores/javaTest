@@ -11,10 +11,10 @@ public class UserController
     public static void CreateUser(string userName)
     {
         User newUser = new User(userName);  
-
-        Console.WriteLine($"User Profile {newUser.userName} created sucessfully!");
-        SetCurrentUser(newUser);
         UserStorage.StoreUser(newUser);
+        Console.WriteLine($"User Profile {newUser.userName} created sucessfully!");
+      
+        SetCurrentUser(newUser);
     }
 
     
