@@ -13,6 +13,7 @@ public class UserController
         User newUser = new User(userName);  
 
         Console.WriteLine($"User Profile {newUser.userName} created sucessfully!");
+        SetCurrentUser(newUser);
         UserStorage.StoreUser(newUser);
     }
 

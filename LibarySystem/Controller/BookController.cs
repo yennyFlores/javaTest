@@ -54,7 +54,7 @@ public class BookController
           Console.WriteLine($"Checking out ...");
                
           Guid userGuid = UserController.GetCurrentGuid();
-          string cmdText = @"SELECT b.barcode, b.title, b.author FROM checkoutStatus c join books b on b.barcode = c.barcode where checkedout_status = 'OUT' ";
+          string cmdText = @"SELECT b.barcode, b.title, b.author FROM (select rank() over(partition by barcode order by control_ts desc) as rnk,* from checkoutStatus) c join books b on b.barcode = c.barcode where rnk=1 and checkedout_status = 'OUT' ";
           using SqlConnection connection = new SqlConnection(ADOconnect.ConnectionString());
           connection.Open();
           using SqlCommand cmd = new SqlCommand(cmdText, connection);
@@ -110,7 +110,7 @@ public class BookController
       public static string QueryCheckedOutBooks(){
            Guid userGuid = UserController.GetCurrentGuid();
           string cmdText =
-               string.Format(@"SELECT rank() over(order by title desc) as _index, b.barcode,  b.title, b.author, c.checkedout_status, c.duedate  FROM checkoutStatus c join books b on b.barcode = c.barcode where checkedout_status = 'OUT' and userguid = '{0}' ", userGuid);
+               string.Format(@"SELECT rank() over(order by title desc) as _index, b.barcode,  b.title, b.author, c.checkedout_status, c.duedate  FROM (select rank() over(partition by barcode order by control_ts desc) as rnk,* from checkoutStatus) c join books b on b.barcode = c.barcode where rnk=1 and checkedout_status = 'OUT' and userguid = '{0}' ", userGuid);
           string returnUserChecked = "";
           Dictionary<int, int> checkinOptions2 = new Dictionary<int, int>();
           using SqlConnection connection = new SqlConnection(ADOconnect.ConnectionString());
@@ -133,15 +133,10 @@ public class BookController
      public static Dictionary<int, int> GetCheckinOp(){
          return checkinOptions;
      }
-
-
-
-     //go back and make sure the latest OUT status is in code
-
      //validations
      //iterations 
-     //change the Library System Name   
-     //move ADO , connection, exceptions
+     //...change the Library System Name   
+     //...move ADO , connection, exceptions
 
      public static void CheckIn(int choosenOption){
           Dictionary<int, int> checkinOps = GetCheckinOp();
@@ -150,7 +145,7 @@ public class BookController
           foreach (KeyValuePair<int,int> op in checkinOps)
           {   
             if(choosenOption == Convert.ToInt32(op.Key)){   
-               Console.WriteLine(op.Key + " owns " + op.Value);
+               //Console.WriteLine(op.Key + " owns " + op.Value);
                checkoutBarcode = Convert.ToInt32(op.Value);
             }
           }
