@@ -10,6 +10,7 @@ public class BookController
   public static List<Book> cart = new List<Book>();
   public static string lastuser = "";
   public static Dictionary<int, int> checkinOptions = new Dictionary<int, int>();
+  public static int optionEnd = 0;
    
   public static List<Book> BookSearch(string userSearch ){
           Console.WriteLine($"Searching ...");
@@ -117,12 +118,15 @@ public class BookController
           connection.Open();
           using SqlCommand cmd4 = new SqlCommand(cmdText, connection);
           using SqlDataReader reader4 = cmd4.ExecuteReader();
+          int count =0;
           while(reader4.Read()){
                returnUserChecked += @" 
-                    Check-In Option " + Convert.ToInt32(reader4[0].ToString()) + ": " + reader4.GetString(2) + " "+ reader4.GetString(3) + " Checked Status-" + reader4.GetString(4) + " "+ "Due Date- " + reader4.GetString(5) + "";
+               Check-In Option " + Convert.ToInt32(reader4[0].ToString()) + ": " + reader4.GetString(2) + " "+ reader4.GetString(3) + " Checked Status-" + reader4.GetString(4) + " "+ "Due Date- " + reader4.GetString(5) + "";
                checkinOptions2.Add(Convert.ToInt32(reader4[0].ToString()), Convert.ToInt32(reader4[1].ToString()));
+               count ++;
           }
           SetCheckinOp(checkinOptions2);
+          SetOp(count);
           return returnUserChecked;
      }
 
@@ -133,10 +137,14 @@ public class BookController
      public static Dictionary<int, int> GetCheckinOp(){
          return checkinOptions;
      }
-     //validations
-     //iterations 
-     //...change the Library System Name   
-     //...move ADO , connection, exceptions
+     
+     public static void SetOp(int options){
+           optionEnd = options ;
+     }
+
+     public static int GetOp(){
+         return optionEnd ;
+     }
 
      public static void CheckIn(int choosenOption){
           Dictionary<int, int> checkinOps = GetCheckinOp();

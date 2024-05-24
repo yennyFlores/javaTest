@@ -2,7 +2,8 @@
 using LibarySystem.Controller;
 
 namespace LibarySystem;
-
+//...change the Library System Name   
+//...move ADO , connection, exceptions
 
 class Menu
 {
@@ -242,25 +243,29 @@ class Menu
 
      public static void CheckedOutBooks(){
         string userCheckedout = BookController.QueryCheckedOutBooks();
-        Console.WriteLine(userCheckedout);
-
+       
         if(userCheckedout == "") {
             Console.WriteLine(@"No books are needed to checkin for {0}", UserController.GetCurrentUserName());
-
+            ScreenTwo();
         } else {
-      
-            Console.WriteLine("Select Option to Check In a book:");
-            
+            Console.WriteLine(@"
+                Option 0: Return to Main Menu " + userCheckedout);
+
             string stringSelection = "";
             do{
+                    Console.WriteLine("Select Option to Check In a book:");
                     stringSelection = Console.ReadLine() ?? "";
                 } 
-            while (!ValidateMenuInput(stringSelection, 0, 2 ));
+            while (!ValidateMenuInput(stringSelection, 0, BookController.GetOp() ));
             int intSelection = Convert.ToInt16(stringSelection);
         
-            BookController.CheckIn(intSelection);
+            if(intSelection ==0){
+                ScreenTwo();
+            } else {
+              BookController.CheckIn(intSelection);
+            }
         }
-        ScreenTwo();
+        
      }
 
      public static bool ValidateMenuInput(string MenuSelection, int optionSizeStart, int optionSizeEnd)
